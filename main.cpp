@@ -2,7 +2,34 @@
 #include <cctype>
 #include <iomanip> // For formatting the number
 using namespace std;
+double stringToDouble(const string& str) {
+	double result = 0.0;
+	int i = 0;
+	bool negative = false;
 
+	// Handle sign
+	if (str[0] == '-') {negative = true; i++;}
+	if (str[0] == '+') {i++;}
+
+	// Process digits before the decimal
+	while (i< str.length() && str[i] != '.') {
+		result = result * 10.0 + (str[i] - '0');
+		i++;
+	}
+
+	// Process digits after the decimal
+	if (i < str.length() && str[i] == '.') {
+		double fraction = 0.1;
+		i++;
+		while(i < str.length()) {
+			result += (str[i] - '0') * fraction;
+			fraction *= 0.1;
+			i++;
+		}
+	}
+	return negative ? -result : result;
+
+}
 double extractNumeric(string userString) {
 	try {
 		if (userString.length() == 0) {
@@ -42,7 +69,7 @@ double extractNumeric(string userString) {
 		}
 
 		// By now, all tests have passed. We can now safely convert the string to double AND return it
-		double num = stod(userString);	
+		double num = stringToDouble(userString);
 		return num;
 
 	// If a test failed, we can let the user know what went wrong and return a "magic number"
